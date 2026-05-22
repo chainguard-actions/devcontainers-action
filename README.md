@@ -9,6 +9,7 @@ Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at
 | Version | Tag | Upstream commit |
 |---------|-----|-----------------|
 | v1.4.0 | [`v1.4.0`](https://github.com/chainguard-actions/devcontainers-action/tree/v1.4.0) | — |
+| v1.4.2 | [`v1.4.2`](https://github.com/chainguard-actions/devcontainers-action/tree/v1.4.2) | — |
 
 ## Privacy
 
