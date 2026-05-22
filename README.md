@@ -10,6 +10,7 @@ Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at
 |---------|-----|-----------------|
 | v1.4.0 | [`v1.4.0`](https://github.com/chainguard-actions/devcontainers-action/tree/v1.4.0) | — |
 | v1.4.2 | [`v1.4.2`](https://github.com/chainguard-actions/devcontainers-action/tree/v1.4.2) | — |
+| v1.4.3 | [`v1.4.3`](https://github.com/chainguard-actions/devcontainers-action/tree/v1.4.3) | [`1082abd`](https://github.com/devcontainers/action/commit/1082abd5d2bf3a11abccba70eef98df068277772) |
 
 ## Privacy
 
