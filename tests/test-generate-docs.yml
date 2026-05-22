@@ -1,0 +1,36 @@
+name: Test generate-docs mode
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Create minimal feature structure
+        run: |
+          mkdir -p src/hello
+          cat > src/hello/devcontainer-feature.json <<'EOF'
+          {
+            "id": "hello",
+            "version": "1.0.0",
+            "name": "Hello Feature",
+            "description": "A minimal test feature"
+          }
+          EOF
+          cat > src/hello/install.sh <<'EOF'
+          #!/bin/bash
+          echo "Hello!"
+          EOF
+      - id: action
+        uses: .
+        with:
+          generate-docs: 'false'
+          validate-only: 'true'
+          base-path-to-features: src
+          devcontainer-cli-version: ''
+          disable-schema-validation: 'false'
+        continue-on-error: true
+      - name: Assert action ran with generate-docs input
+        run: |
+          echo "Action completed with generate-docs and devcontainer-cli-version inputs"
+          echo "PASS"

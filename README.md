@@ -1,14 +1,6 @@
 # devcontainers/action
 
-Package and publish development container assets
-
-Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at [https://github.com/devcontainers/action](https://github.com/devcontainers/action).
-
-## Versions
-
-| Version | Tag | Upstream commit |
-|---------|-----|-----------------|
-| v1.4.0 | [`v1.4.0`](https://github.com/chainguard-actions/devcontainers-action/tree/v1.4.0) | — |
+Hardened GitHub Action by [Chainguard](https://www.chainguard.dev).
 
 ## Privacy
 
