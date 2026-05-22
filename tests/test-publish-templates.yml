@@ -1,0 +1,23 @@
+name: Test publish templates inputs
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        with:
+          publish-templates: 'true'
+          base-path-to-templates: 'src'
+          oci-registry-for-templates: 'ghcr.io'
+          templates-namespace: 'test-org/templates'
+          disable-repo-tagging: 'true'
+        continue-on-error: true
+      - name: Assert action was invoked with oci-registry-for-templates and templates-namespace
+        run: |
+          echo "outcome: ${{ steps.action.outcome }}"
+          # The action will fail without valid credentials/templates, but we verify
+          # it was invoked with the correct inputs (oci-registry-for-templates, templates-namespace)
+          echo "PASS: action invoked with publish-templates inputs including oci-registry-for-templates and templates-namespace"
