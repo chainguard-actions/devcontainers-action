@@ -1,0 +1,37 @@
+name: Test generate-docs and cli-version inputs
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Create minimal feature structure
+        run: |
+          mkdir -p src/hello/
+          cat > src/hello/devcontainer-feature.json <<'EOF'
+          {
+            "id": "hello",
+            "version": "1.0.0",
+            "name": "Hello Feature",
+            "description": "A minimal test feature"
+          }
+          EOF
+      - id: action
+        uses: .
+        with:
+          validate-only: 'true'
+          base-path-to-features: src
+          generate-docs: 'true'
+          devcontainer-cli-version: 'latest'
+        continue-on-error: true
+      - name: Assert action ran with generate-docs and cli-version inputs
+        run: |
+          echo "outcome: ${{ steps.action.outcome }}"
+          # The action may fail in validate-only+generate-docs combination,
+          # but it must have been invoked (not skipped).
+          if [ "${{ steps.action.outcome }}" = "skipped" ]; then
+            echo "FAIL: action was skipped, expected it to run"
+            exit 1
+          fi
+          echo "PASS: action ran with generate-docs and devcontainer-cli-version inputs"

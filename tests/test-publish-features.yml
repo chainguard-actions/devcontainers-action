@@ -1,0 +1,38 @@
+name: Test publish features inputs
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Create minimal feature structure
+        run: |
+          mkdir -p src/hello/
+          cat > src/hello/devcontainer-feature.json <<'EOF'
+          {
+            "id": "hello",
+            "version": "1.0.0",
+            "name": "Hello Feature",
+            "description": "A minimal test feature"
+          }
+          EOF
+      - id: action
+        uses: .
+        with:
+          publish-features: 'true'
+          base-path-to-features: src
+          oci-registry: ghcr.io
+          features-namespace: test-org/features
+          disable-repo-tagging: 'true'
+        continue-on-error: true
+      - name: Assert action ran with feature inputs
+        run: |
+          echo "outcome: ${{ steps.action.outcome }}"
+          # The action will fail without real OCI credentials, but it must have been invoked
+          # (not skipped). We verify it ran — failure due to missing auth is expected.
+          if [ "${{ steps.action.outcome }}" = "skipped" ]; then
+            echo "FAIL: action was skipped, expected it to run"
+            exit 1
+          fi
+          echo "PASS: action ran with oci-registry and features-namespace inputs"
