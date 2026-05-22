@@ -1,0 +1,31 @@
+name: Test validate-only mode
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Create minimal feature structure
+        run: |
+          mkdir -p src/myfeature
+          cat > src/myfeature/devcontainer-feature.json <<'EOF'
+          {
+            "id": "myfeature",
+            "version": "1.0.0",
+            "name": "My Feature",
+            "description": "A test feature"
+          }
+          EOF
+      - id: action
+        uses: .
+        with:
+          validate-only: 'true'
+          disable-schema-validation: 'false'
+          base-path-to-features: src
+          generate-docs: 'false'
+          disable-repo-tagging: 'true'
+      - name: Assert action completed successfully
+        run: |
+          echo "validate-only mode completed"
+          echo "PASS"
