@@ -1,4 +1,4 @@
-name: Test publish templates inputs
+name: Test publish-templates inputs
 on:
   workflow_dispatch:
 jobs:
@@ -10,14 +10,19 @@ jobs:
         uses: .
         with:
           publish-templates: 'true'
-          base-path-to-templates: 'src'
+          base-path-to-templates: 'src/templates'
           oci-registry-for-templates: 'ghcr.io'
           templates-namespace: 'test-org/templates'
+          disable-schema-validation: 'false'
           disable-repo-tagging: 'true'
         continue-on-error: true
-      - name: Assert action was invoked with oci-registry-for-templates and templates-namespace
+      - name: Assert action ran
         run: |
           echo "outcome: ${{ steps.action.outcome }}"
-          # The action will fail without valid credentials/templates, but we verify
-          # it was invoked with the correct inputs (oci-registry-for-templates, templates-namespace)
-          echo "PASS: action invoked with publish-templates inputs including oci-registry-for-templates and templates-namespace"
+          # The action may fail due to missing registry credentials or missing templates directory,
+          # but it must not be skipped — it should have been invoked.
+          if [ "${{ steps.action.outcome }}" = "skipped" ]; then
+            echo "FAIL: action was skipped unexpectedly"
+            exit 1
+          fi
+          echo "PASS: action ran (outcome=${{ steps.action.outcome }})"

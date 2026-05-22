@@ -11,11 +11,17 @@ jobs:
         with:
           validate-only: 'true'
           disable-schema-validation: 'false'
-          base-path-to-features: 'src'
+          generate-docs: 'false'
+          disable-repo-tagging: 'false'
         continue-on-error: true
-      - name: Assert action ran (validate-only mode exits without publishing)
+      - name: Assert action ran
         run: |
           echo "outcome: ${{ steps.action.outcome }}"
-          # validate-only mode may succeed or fail depending on whether src/ has features
-          # The important thing is the action was invoked with these inputs
-          echo "PASS: action invoked with validate-only inputs"
+          # validate-only mode should either succeed or fail gracefully
+          # The action runs node16 and may exit with an error if no features/templates found
+          # but it should not crash unexpectedly
+          if [ "${{ steps.action.outcome }}" = "skipped" ]; then
+            echo "FAIL: action was skipped unexpectedly"
+            exit 1
+          fi
+          echo "PASS: action ran (outcome=${{ steps.action.outcome }})"
