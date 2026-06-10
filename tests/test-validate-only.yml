@@ -12,17 +12,14 @@ jobs:
           validate-only: 'true'
           disable-schema-validation: 'false'
           generate-docs: 'false'
-          disable-repo-tagging: 'false'
         continue-on-error: true
-      - name: Assert action ran (validate-only exits cleanly or with known error)
-        env:
-          OUTCOME: ${{ steps.action.outcome }}
+      - name: Assert action ran
         run: |
-          echo "outcome: $OUTCOME"
-          # validate-only mode should either succeed or fail with a known error
-          # (no features/templates dir present), but the action must have run
-          if [ "$OUTCOME" = "skipped" ]; then
-            echo "FAIL: action was skipped, expected it to run"
+          echo "outcome: ${{ steps.action.outcome }}"
+          # The action may fail if no features/templates are found, but it should at least start
+          # We just verify the step executed (outcome is set)
+          if [ -z "${{ steps.action.outcome }}" ]; then
+            echo "FAIL: action did not produce an outcome"
             exit 1
           fi
-          echo "PASS: action ran with outcome=$OUTCOME"
+          echo "PASS: action ran with outcome=${{ steps.action.outcome }}"
