@@ -1,4 +1,4 @@
-name: Test publish-features inputs
+name: Test publish features inputs
 on:
   workflow_dispatch:
 jobs:
@@ -6,18 +6,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Create minimal feature structure
+        run: |
+          mkdir -p src/my-feature
+          cat > src/my-feature/devcontainer-feature.json <<'EOF'
+          {
+            "id": "my-feature",
+            "version": "1.0.0",
+            "name": "My Feature",
+            "description": "A test feature"
+          }
+          EOF
       - id: action
         uses: .
         with:
-          publish-features: 'true'
-          base-path-to-features: 'src/features'
-          oci-registry: 'ghcr.io'
-          features-namespace: 'test-org/features'
-          disable-repo-tagging: 'true'
-        continue-on-error: true
-      - name: Assert action was invoked with feature publishing inputs
+          validate-only: 'true'
+          publish-features: 'false'
+          base-path-to-features: src
+          oci-registry: ghcr.io
+          features-namespace: myorg/features
+      - name: Assert action completed successfully
         run: |
-          echo "outcome: ${{ steps.action.outcome }}"
-          # The action may fail due to missing registry credentials or missing features dir,
-          # but it must have been invoked with all the required inputs.
-          echo "PASS: action was invoked with oci-registry and features-namespace inputs"
+          echo "publish-features inputs accepted"
+          echo "PASS"
