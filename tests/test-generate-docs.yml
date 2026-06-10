@@ -1,4 +1,4 @@
-name: Test validate-only mode
+name: Test generate-docs mode
 on:
   workflow_dispatch:
 jobs:
@@ -9,20 +9,21 @@ jobs:
       - id: action
         uses: .
         with:
-          validate-only: 'true'
-          disable-schema-validation: 'false'
-          generate-docs: 'false'
-          disable-repo-tagging: 'false'
+          generate-docs: 'true'
+          devcontainer-cli-version: ''
+          disable-schema-validation: 'true'
+          disable-repo-tagging: 'true'
+          validate-only: 'false'
         continue-on-error: true
-      - name: Assert action ran (validate-only exits cleanly or with known error)
+      - name: Assert action ran with generate-docs input
         env:
           OUTCOME: ${{ steps.action.outcome }}
         run: |
           echo "outcome: $OUTCOME"
-          # validate-only mode should either succeed or fail with a known error
-          # (no features/templates dir present), but the action must have run
+          # The action may fail due to missing features/templates dirs,
+          # but it must have run (not skipped)
           if [ "$OUTCOME" = "skipped" ]; then
             echo "FAIL: action was skipped, expected it to run"
             exit 1
           fi
-          echo "PASS: action ran with outcome=$OUTCOME"
+          echo "PASS: action ran with generate-docs=true, outcome=$OUTCOME"
