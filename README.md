@@ -11,7 +11,7 @@ Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at
 | v1.3.1 | [`v1.3.1`](https://github.com/chainguard-actions/devcontainers-action/tree/v1.3.1) | [`79f4dee`](https://github.com/devcontainers/action/commit/79f4dee22a716245ebe89961ea56744a00741992) |
 | v1.4.0 | [`v1.4.0`](https://github.com/chainguard-actions/devcontainers-action/tree/v1.4.0) | [`3f8cae6`](https://github.com/devcontainers/action/commit/3f8cae6bc8e5ef6d58062d7c5cc471d81e8ded05) |
 | v1.4.1 | [`v1.4.1`](https://github.com/chainguard-actions/devcontainers-action/tree/v1.4.1) | — |
-| v1.4.2 | [`v1.4.2`](https://github.com/chainguard-actions/devcontainers-action/tree/v1.4.2) | — |
+| v1.4.2 | [`v1.4.2`](https://github.com/chainguard-actions/devcontainers-action/tree/v1.4.2) | [`528049d`](https://github.com/devcontainers/action/commit/528049dce833673f136ddfc09c2720d450029a6b) |
 | v1.4.3 | [`v1.4.3`](https://github.com/chainguard-actions/devcontainers-action/tree/v1.4.3) | [`1082abd`](https://github.com/devcontainers/action/commit/1082abd5d2bf3a11abccba70eef98df068277772) |
 
 ## Privacy
