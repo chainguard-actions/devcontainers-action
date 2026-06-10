@@ -17,9 +17,7 @@ jobs:
       - name: Assert action ran
         run: |
           echo "outcome: ${{ steps.action.outcome }}"
-          # validate-only mode should either succeed or fail gracefully
-          # The action runs node16 and may exit with an error if no features/templates found
-          # but it should not crash unexpectedly
+          # validate-only mode should either succeed or fail gracefully (no features to validate is acceptable)
           if [ "${{ steps.action.outcome }}" = "skipped" ]; then
             echo "FAIL: action was skipped unexpectedly"
             exit 1

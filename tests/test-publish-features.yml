@@ -1,4 +1,4 @@
-name: Test publish-features inputs
+name: Test publish features inputs
 on:
   workflow_dispatch:
 jobs:
@@ -10,19 +10,20 @@ jobs:
         uses: .
         with:
           publish-features: 'true'
-          base-path-to-features: 'src/features'
+          base-path-to-features: 'src'
           oci-registry: 'ghcr.io'
           features-namespace: 'test-org/features'
           disable-schema-validation: 'false'
           disable-repo-tagging: 'true'
+          generate-docs: 'false'
         continue-on-error: true
       - name: Assert action ran
         run: |
           echo "outcome: ${{ steps.action.outcome }}"
-          # The action may fail due to missing registry credentials or missing features directory,
-          # but it must not be skipped — it should have been invoked.
+          # The action may fail due to missing OCI credentials or no features found,
+          # but it must not be skipped — it must have actually executed.
           if [ "${{ steps.action.outcome }}" = "skipped" ]; then
             echo "FAIL: action was skipped unexpectedly"
             exit 1
           fi
-          echo "PASS: action ran (outcome=${{ steps.action.outcome }})"
+          echo "PASS: action ran with oci-registry and features-namespace inputs (outcome=${{ steps.action.outcome }})"
