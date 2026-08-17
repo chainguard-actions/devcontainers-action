@@ -1,4 +1,4 @@
-name: Test validate-only mode
+name: Test features namespace and oci-registry inputs
 on:
   workflow_dispatch:
 jobs:
@@ -10,31 +10,33 @@ jobs:
       # Create a minimal devcontainer feature structure for validation
       - name: Create feature fixture
         run: |
-          mkdir -p src/hello/
-          cat > src/hello/devcontainer-feature.json <<'EOF'
+          mkdir -p src/myfeature/
+          cat > src/myfeature/devcontainer-feature.json << 'EOF'
           {
-            "id": "hello",
+            "id": "myfeature",
             "version": "1.0.0",
-            "name": "Hello Feature",
-            "description": "A test feature",
+            "name": "My Feature",
+            "description": "A test feature for namespace/registry input coverage",
             "options": {}
           }
           EOF
-          cat > src/hello/install.sh <<'EOF'
+          cat > src/myfeature/install.sh << 'EOF'
           #!/bin/sh
-          echo "Hello from feature!"
+          echo "Hello from myfeature!"
           EOF
-          chmod +x src/hello/install.sh
+          chmod +x src/myfeature/install.sh
 
       - id: action
-        name: Run action in validate-only mode
+        name: Run action with oci-registry and features-namespace inputs
         uses: .
         with:
           validate-only: 'true'
           base-path-to-features: src
+          oci-registry: ghcr.io
+          features-namespace: test-owner/features
         continue-on-error: true
 
-      - name: Assert action ran (validate-only does not require publishing credentials)
+      - name: Assert action ran (validate-only with registry/namespace inputs)
         env:
           OUTCOME: ${{ steps.action.outcome }}
         run: |

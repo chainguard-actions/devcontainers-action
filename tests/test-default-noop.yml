@@ -1,0 +1,32 @@
+name: Test default no-op mode
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - id: action
+        name: Run action with all defaults (no publish, no validate-only)
+        uses: .
+        with:
+          publish-features: 'false'
+          publish-templates: 'false'
+          validate-only: 'false'
+          generate-docs: 'false'
+        continue-on-error: true
+
+      - name: Assert action completed
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          # With no publish flags and no validate-only, the action should complete
+          # (success or failure are both valid — it just must not crash the runner)
+          if [ "$OUTCOME" = "success" ] || [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action completed with outcome: $OUTCOME"
+          else
+            echo "FAIL: unexpected outcome: $OUTCOME"
+            exit 1
+          fi

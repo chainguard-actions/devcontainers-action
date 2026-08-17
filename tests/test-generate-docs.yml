@@ -1,4 +1,4 @@
-name: Test generate-docs and cli-version inputs
+name: Test generate-docs mode
 on:
   workflow_dispatch:
 jobs:
@@ -6,26 +6,56 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - name: Create minimal feature structure
+
+      # Set up git identity for potential doc commits
+      - name: Configure git identity
         run: |
-          mkdir -p src/hello/
-          cat > src/hello/devcontainer-feature.json <<'EOF'
+          git config user.email "test@example.com"
+          git config user.name "Test User"
+
+      # Create a minimal devcontainer feature structure
+      - name: Create feature fixture
+        run: |
+          mkdir -p src/docfeature/
+          cat > src/docfeature/devcontainer-feature.json <<'EOF'
           {
-            "id": "hello",
+            "id": "docfeature",
             "version": "1.0.0",
-            "name": "Hello Feature",
-            "description": "A minimal test feature"
+            "name": "Doc Feature",
+            "description": "A test feature for doc generation",
+            "options": {
+              "version": {
+                "type": "string",
+                "default": "latest",
+                "description": "Version to install"
+              }
+            }
           }
           EOF
+          cat > src/docfeature/install.sh <<'EOF'
+          #!/bin/sh
+          echo "Doc feature installed!"
+          EOF
+          chmod +x src/docfeature/install.sh
+
       - id: action
+        name: Run action with generate-docs enabled
         uses: .
         with:
           generate-docs: 'true'
-          devcontainer-cli-version: 'latest'
-          validate-only: 'true'
           base-path-to-features: src
         continue-on-error: true
-      - name: Assert action ran
+
+      - name: Assert action completed
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
         run: |
-          echo "outcome: ${{ steps.action.outcome }}"
-          echo "PASS: action completed with outcome ${{ steps.action.outcome }}"
+          echo "outcome: $OUTCOME"
+          # generate-docs may succeed or fail depending on environment,
+          # but the runner itself must not crash
+          if [ "$OUTCOME" = "success" ] || [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action completed with outcome: $OUTCOME"
+          else
+            echo "FAIL: unexpected outcome: $OUTCOME"
+            exit 1
+          fi

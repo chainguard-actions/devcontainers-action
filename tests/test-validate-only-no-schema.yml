@@ -1,4 +1,4 @@
-name: Test validate-only mode
+name: Test validate-only with schema validation disabled
 on:
   workflow_dispatch:
 jobs:
@@ -7,39 +7,39 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      # Create a minimal devcontainer feature structure for validation
+      # Create a minimal devcontainer feature structure
       - name: Create feature fixture
         run: |
-          mkdir -p src/hello/
-          cat > src/hello/devcontainer-feature.json <<'EOF'
+          mkdir -p src/myfeature/
+          cat > src/myfeature/devcontainer-feature.json <<'EOF'
           {
-            "id": "hello",
+            "id": "myfeature",
             "version": "1.0.0",
-            "name": "Hello Feature",
-            "description": "A test feature",
+            "name": "My Feature",
+            "description": "A test feature for schema-disabled validation",
             "options": {}
           }
           EOF
-          cat > src/hello/install.sh <<'EOF'
+          cat > src/myfeature/install.sh <<'EOF'
           #!/bin/sh
-          echo "Hello from feature!"
+          echo "My feature installed!"
           EOF
-          chmod +x src/hello/install.sh
+          chmod +x src/myfeature/install.sh
 
       - id: action
-        name: Run action in validate-only mode
+        name: Run action with validate-only and disable-schema-validation
         uses: .
         with:
           validate-only: 'true'
+          disable-schema-validation: 'true'
           base-path-to-features: src
         continue-on-error: true
 
-      - name: Assert action ran (validate-only does not require publishing credentials)
+      - name: Assert action completed
         env:
           OUTCOME: ${{ steps.action.outcome }}
         run: |
           echo "outcome: $OUTCOME"
-          # validate-only should succeed or fail gracefully (not crash the runner)
           if [ "$OUTCOME" = "success" ] || [ "$OUTCOME" = "failure" ]; then
             echo "PASS: action completed with outcome: $OUTCOME"
           else

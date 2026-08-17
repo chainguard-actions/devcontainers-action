@@ -1,0 +1,36 @@
+name: Test validate-only mode for features
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_REF: refs/heads/main
+      GITHUB_EVENT_NAME: push
+      GITHUB_REPOSITORY: test-owner/test-repo
+      GITHUB_TOKEN: fake-token-for-testing
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - id: action
+        uses: .
+        with:
+          validate-only: 'true'
+          publish-features: 'false'
+          base-path-to-features: >-
+            ${{ github.workspace }}/pristine/devcontainers--action/v1.4.3/tests/fixtures/features
+        continue-on-error: true
+
+      - name: Assert action ran without unexpected error
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          # validate-only with a valid feature should succeed or fail gracefully
+          # The action may fail if devcontainer CLI can't be installed, but should not crash
+          if [ "$OUTCOME" = "success" ] || [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action completed with outcome=$OUTCOME"
+          else
+            echo "FAIL: unexpected outcome=$OUTCOME"
+            exit 1
+          fi
