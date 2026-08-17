@@ -1,4 +1,4 @@
-name: Test generate-docs mode
+name: Test disable-schema-validation mode
 on:
   workflow_dispatch:
 jobs:
@@ -7,15 +7,15 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Run action with generate-docs enabled
+      - name: Run action with schema validation disabled
         id: action
         uses: .
         with:
-          generate-docs: 'true'
           validate-only: 'true'
+          disable-schema-validation: 'true'
           base-path-to-features: tests/fixtures/features
 
       - name: Assert action completed successfully
         run: |
-          echo "Action completed with generate-docs enabled"
-          echo "PASS: generate-docs mode ran without error"
+          echo "Action completed with schema validation disabled"
+          echo "PASS: disable-schema-validation mode ran without error"

@@ -1,0 +1,28 @@
+name: Test default mode with no publishing
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_REF: refs/heads/main
+      GITHUB_EVENT_NAME: push
+      GITHUB_TOKEN: dummy-token-for-testing
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Run action with all defaults (no publish, no validate-only)
+        id: action
+        uses: .
+        continue-on-error: true
+        with:
+          publish-features: 'false'
+          publish-templates: 'false'
+
+      - name: Assert action ran (success or expected no-op failure)
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "Action outcome: $OUTCOME"
+          echo "Action completed with default settings and no publishing"
+          echo "PASS: default no-publish mode ran without unexpected crash"

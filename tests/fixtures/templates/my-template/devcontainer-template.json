@@ -1,0 +1,8 @@
+{
+  "id": "my-template",
+  "version": "1.0.0",
+  "name": "My Template",
+  "description": "A test dev container template",
+  "documentationURL": "https://github.com/devcontainers/action",
+  "options": {}
+}

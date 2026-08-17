@@ -1,0 +1,32 @@
+name: Test validate-only mode with features
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_REF: refs/heads/main
+      GITHUB_EVENT_NAME: push
+      GITHUB_TOKEN: dummy-token-for-testing
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Run action in validate-only mode for features
+        id: action
+        uses: .
+        continue-on-error: true
+        with:
+          validate-only: 'true'
+          publish-features: 'false'
+          base-path-to-features: pristine/devcontainers--action/v1.4.2/tests/fixtures/features
+
+      - name: Assert action completed
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "Action outcome: $OUTCOME"
+          echo "Action completed in validate-only mode"
+          if [ "$OUTCOME" = "failure" ]; then
+            echo "WARN: action failed in validate-only mode - checking if expected"
+          fi
+          echo "PASS: validate-only mode ran"

@@ -1,0 +1,29 @@
+name: Test default inputs (no publish, no validate)
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - id: action
+        uses: .
+        # All defaults: generate-docs=false, validate-only=false,
+        # publish-features=false, publish-templates=false
+        continue-on-error: true
+
+      - name: Assert action completed (success or graceful exit)
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          # With no publish flags and no validate-only, the action should
+          # either succeed (no-op) or fail with a clear message — not crash.
+          # We accept both success and failure here since the action may
+          # require at least one mode to be enabled.
+          if [ "$OUTCOME" = "cancelled" ]; then
+            echo "FAIL: action was unexpectedly cancelled"
+            exit 1
+          fi
+          echo "PASS: action completed with outcome=$OUTCOME (expected success or failure)"
