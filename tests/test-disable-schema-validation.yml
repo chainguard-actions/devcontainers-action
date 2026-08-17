@@ -1,4 +1,4 @@
-name: Test validate-only mode
+name: Test disable-schema-validation flag
 on:
   workflow_dispatch:
 jobs:
@@ -14,13 +14,14 @@ jobs:
              "$GITHUB_WORKSPACE/src/features/hello/devcontainer-feature.json"
 
       - id: action
-        name: Run action in validate-only mode
+        name: Run action with schema validation disabled
         uses: .
         with:
           validate-only: 'true'
+          disable-schema-validation: 'true'
           base-path-to-features: src/features
 
       - name: Assert action completed successfully
         run: |
-          echo "Action completed in validate-only mode"
-          echo "PASS: validate-only mode ran without error"
+          echo "Action completed with schema validation disabled"
+          echo "PASS: disable-schema-validation mode ran without error"

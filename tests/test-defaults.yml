@@ -1,0 +1,22 @@
+name: Test default inputs (no-op)
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - id: action
+        name: Run action with all defaults (no publish, no validate-only)
+        uses: .
+        with:
+          publish-features: 'false'
+          publish-templates: 'false'
+          validate-only: 'false'
+          generate-docs: 'false'
+
+      - name: Assert action completed without error
+        run: |
+          echo "Action completed with default inputs"
+          echo "PASS: action ran with defaults without error"
