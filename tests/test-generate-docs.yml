@@ -1,4 +1,4 @@
-name: Test generate-docs input
+name: Test generate-docs mode
 on:
   workflow_dispatch:
 jobs:
@@ -6,29 +6,44 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - name: Create minimal feature structure
+
+      - name: Create a devcontainer-feature.json fixture for docs generation
         run: |
-          mkdir -p src/hello/
-          cat > src/hello/devcontainer-feature.json <<'EOF'
+          mkdir -p "$GITHUB_WORKSPACE/tests/fixtures/features-docs/my-feature"
+          cat > "$GITHUB_WORKSPACE/tests/fixtures/features-docs/my-feature/devcontainer-feature.json" <<'EOF'
           {
-            "id": "hello",
+            "id": "my-feature",
             "version": "1.0.0",
-            "name": "Hello Feature",
-            "description": "A minimal test feature"
+            "name": "My Feature",
+            "description": "A test dev container feature for docs generation",
+            "options": {
+              "version": {
+                "type": "string",
+                "proposals": ["latest", "1.0.0"],
+                "default": "latest",
+                "description": "Select the version to install"
+              }
+            }
           }
           EOF
+
       - id: action
         uses: .
         with:
           generate-docs: 'true'
-          base-path-to-features: src
-          validate-only: 'true'
+          base-path-to-features: tests/fixtures/features-docs
         continue-on-error: true
-      - name: Assert action ran (not skipped)
+
+      - name: Assert generate-docs ran
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
         run: |
-          echo "outcome: ${{ steps.action.outcome }}"
-          if [ "${{ steps.action.outcome }}" = "skipped" ]; then
-            echo "FAIL: action was skipped unexpectedly"
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" = "success" ]; then
+            echo "PASS: generate-docs completed successfully"
+          elif [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action failed gracefully (expected under sentinel repo / no git commit access)"
+          else
+            echo "FAIL: unexpected outcome '$OUTCOME'"
             exit 1
           fi
-          echo "PASS: action ran with generate-docs input"

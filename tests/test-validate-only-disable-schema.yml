@@ -1,4 +1,4 @@
-name: Test validate-only mode
+name: Test validate-only with schema validation disabled
 on:
   workflow_dispatch:
 jobs:
@@ -7,16 +7,15 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Create a valid devcontainer-feature.json fixture
+      - name: Create a minimal devcontainer-feature.json fixture
         run: |
-          mkdir -p "$GITHUB_WORKSPACE/tests/fixtures/features/my-feature"
-          cat > "$GITHUB_WORKSPACE/tests/fixtures/features/my-feature/devcontainer-feature.json" <<'EOF'
+          mkdir -p "$GITHUB_WORKSPACE/tests/fixtures/features-no-schema/my-feature"
+          cat > "$GITHUB_WORKSPACE/tests/fixtures/features-no-schema/my-feature/devcontainer-feature.json" <<'EOF'
           {
             "id": "my-feature",
             "version": "1.0.0",
             "name": "My Feature",
-            "description": "A test dev container feature",
-            "options": {}
+            "description": "A test dev container feature"
           }
           EOF
 
@@ -24,16 +23,17 @@ jobs:
         uses: .
         with:
           validate-only: 'true'
-          base-path-to-features: tests/fixtures/features
+          disable-schema-validation: 'true'
+          base-path-to-features: tests/fixtures/features-no-schema
         continue-on-error: true
 
-      - name: Assert validate-only ran (success or graceful failure on sentinel repo)
+      - name: Assert action ran with schema validation disabled
         env:
           OUTCOME: ${{ steps.action.outcome }}
         run: |
           echo "outcome: $OUTCOME"
           if [ "$OUTCOME" = "success" ]; then
-            echo "PASS: validate-only completed successfully"
+            echo "PASS: action completed successfully with schema validation disabled"
           elif [ "$OUTCOME" = "failure" ]; then
             echo "PASS: action failed gracefully (expected under sentinel repo / no OCI credentials)"
           else

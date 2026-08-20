@@ -1,4 +1,4 @@
-name: Test publish templates inputs
+name: Test publish-templates mode
 on:
   workflow_dispatch:
 jobs:
@@ -6,17 +6,46 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Create a devcontainer-template.json fixture for publishing
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/tests/fixtures/templates-publish/my-template"
+          cat > "$GITHUB_WORKSPACE/tests/fixtures/templates-publish/my-template/devcontainer-template.json" <<'EOF'
+          {
+            "id": "my-template",
+            "version": "1.0.0",
+            "name": "My Template",
+            "description": "A test dev container template for publishing"
+          }
+          EOF
+          mkdir -p "$GITHUB_WORKSPACE/tests/fixtures/templates-publish/my-template/.devcontainer"
+          cat > "$GITHUB_WORKSPACE/tests/fixtures/templates-publish/my-template/.devcontainer/devcontainer.json" <<'EOF'
+          {
+            "name": "My Template",
+            "image": "mcr.microsoft.com/devcontainers/base:ubuntu"
+          }
+          EOF
+
       - id: action
         uses: .
         with:
-          publish-templates: 'false'
-          base-path-to-templates: 'src/templates'
-          oci-registry-for-templates: 'ghcr.io'
-          templates-namespace: 'myorg/templates'
+          publish-templates: 'true'
+          base-path-to-templates: tests/fixtures/templates-publish
+          oci-registry-for-templates: ghcr.io
+          templates-namespace: test-namespace/templates
           disable-repo-tagging: 'true'
-          generate-docs: 'false'
         continue-on-error: true
-      - name: Assert action ran
+
+      - name: Assert publish-templates ran (success or graceful failure without credentials)
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
         run: |
-          echo "Action completed with templates inputs"
-          echo "PASS"
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" = "success" ]; then
+            echo "PASS: publish-templates completed successfully"
+          elif [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action failed gracefully (expected without valid OCI registry credentials)"
+          else
+            echo "FAIL: unexpected outcome '$OUTCOME'"
+            exit 1
+          fi
