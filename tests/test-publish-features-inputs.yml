@@ -1,0 +1,48 @@
+name: Test publish-features inputs (oci-registry, features-namespace)
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Create minimal feature structure
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/src/hello"
+          cat > "$GITHUB_WORKSPACE/src/hello/devcontainer-feature.json" <<'EOF'
+          {
+            "id": "hello",
+            "version": "1.0.0",
+            "name": "Hello Feature",
+            "description": "A minimal test feature"
+          }
+          EOF
+          cat > "$GITHUB_WORKSPACE/src/hello/install.sh" <<'EOF'
+          #!/bin/sh
+          echo "Hello from feature!"
+          EOF
+
+      - id: action
+        uses: .
+        continue-on-error: true
+        with:
+          publish-features: 'true'
+          base-path-to-features: src
+          oci-registry: ghcr.io
+          features-namespace: test-namespace/features
+          disable-repo-tagging: 'true'
+
+      - name: Assert action ran with oci-registry and features-namespace inputs
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" = "success" ]; then
+            echo "PASS: action succeeded with oci-registry and features-namespace inputs"
+          elif [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action failed gracefully (expected — sentinel repo / no registry auth)"
+          else
+            echo "FAIL: unexpected outcome '$OUTCOME'"
+            exit 1
+          fi

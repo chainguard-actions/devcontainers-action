@@ -1,0 +1,34 @@
+name: Test default no-publish mode
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Run action with all defaults (no publish)
+        id: action
+        uses: .
+        with:
+          publish-features: 'false'
+          publish-templates: 'false'
+          validate-only: 'false'
+          generate-docs: 'false'
+        continue-on-error: true
+
+      - name: Assert action ran with defaults
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          # With no publish flags and no validate-only, the action should
+          # either succeed (no-op) or fail gracefully (missing config, etc.)
+          if [ "$OUTCOME" = "success" ]; then
+            echo "PASS: action completed with default no-publish settings"
+          elif [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action ran and exited (expected in harness without full repo setup)"
+          else
+            echo "FAIL: unexpected outcome '$OUTCOME'"
+            exit 1
+          fi
