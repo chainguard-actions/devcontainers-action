@@ -6,14 +6,14 @@ Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at
 
 ## Versions
 
-| Version | Tag | Upstream commit |
-|---------|-----|-----------------|
-| v1.3.1 | [`v1.3.1`](https://github.com/chainguard-actions/devcontainers-action/tree/v1.3.1) | [`79f4dee`](https://github.com/devcontainers/action/commit/79f4dee22a716245ebe89961ea56744a00741992) |
-| v1.4.0 | [`v1.4.0`](https://github.com/chainguard-actions/devcontainers-action/tree/v1.4.0) | [`3f8cae6`](https://github.com/devcontainers/action/commit/3f8cae6bc8e5ef6d58062d7c5cc471d81e8ded05) |
-| v1.4.1 | [`v1.4.1`](https://github.com/chainguard-actions/devcontainers-action/tree/v1.4.1) | [`2858bb8`](https://github.com/devcontainers/action/commit/2858bb873d82d653b033bfe0977fb8a16708b0c3) |
-| v1.4.2 | [`v1.4.2`](https://github.com/chainguard-actions/devcontainers-action/tree/v1.4.2) | [`528049d`](https://github.com/devcontainers/action/commit/528049dce833673f136ddfc09c2720d450029a6b) |
-| v1.4.3 | [`v1.4.3`](https://github.com/chainguard-actions/devcontainers-action/tree/v1.4.3) | [`1082abd`](https://github.com/devcontainers/action/commit/1082abd5d2bf3a11abccba70eef98df068277772) |
-| v1.4.4 | [`v1.4.4`](https://github.com/chainguard-actions/devcontainers-action/tree/v1.4.4) | [`bef2cf2`](https://github.com/devcontainers/action/commit/bef2cf2d1a019b00b45e184f83035e01bd1972f3) |
+| Version | Tag | Upstream commit | Hardening report |
+|---------|-----|-----------------|------------------|
+| v1.3.1 | [`v1.3.1`](https://github.com/chainguard-actions/devcontainers-action/tree/v1.3.1) | [`79f4dee`](https://github.com/devcontainers/action/commit/79f4dee22a716245ebe89961ea56744a00741992) | [`HARDENING.md`](https://github.com/chainguard-actions/devcontainers-action/blob/v1.3.1/HARDENING.md) |
+| v1.4.0 | [`v1.4.0`](https://github.com/chainguard-actions/devcontainers-action/tree/v1.4.0) | [`3f8cae6`](https://github.com/devcontainers/action/commit/3f8cae6bc8e5ef6d58062d7c5cc471d81e8ded05) | [`HARDENING.md`](https://github.com/chainguard-actions/devcontainers-action/blob/v1.4.0/HARDENING.md) |
+| v1.4.1 | [`v1.4.1`](https://github.com/chainguard-actions/devcontainers-action/tree/v1.4.1) | [`2858bb8`](https://github.com/devcontainers/action/commit/2858bb873d82d653b033bfe0977fb8a16708b0c3) | [`HARDENING.md`](https://github.com/chainguard-actions/devcontainers-action/blob/v1.4.1/HARDENING.md) |
+| v1.4.2 | [`v1.4.2`](https://github.com/chainguard-actions/devcontainers-action/tree/v1.4.2) | [`528049d`](https://github.com/devcontainers/action/commit/528049dce833673f136ddfc09c2720d450029a6b) | [`HARDENING.md`](https://github.com/chainguard-actions/devcontainers-action/blob/v1.4.2/HARDENING.md) |
+| v1.4.3 | [`v1.4.3`](https://github.com/chainguard-actions/devcontainers-action/tree/v1.4.3) | [`1082abd`](https://github.com/devcontainers/action/commit/1082abd5d2bf3a11abccba70eef98df068277772) | [`HARDENING.md`](https://github.com/chainguard-actions/devcontainers-action/blob/v1.4.3/HARDENING.md) |
+| v1.4.4 | [`v1.4.4`](https://github.com/chainguard-actions/devcontainers-action/tree/v1.4.4) | [`bef2cf2`](https://github.com/devcontainers/action/commit/bef2cf2d1a019b00b45e184f83035e01bd1972f3) | [`HARDENING.md`](https://github.com/chainguard-actions/devcontainers-action/blob/v1.4.4/HARDENING.md) |
 
 ## Privacy
 
